@@ -49,7 +49,7 @@ for item in items[:10]:
 
    keyword = title_tag.get_text(strip=True) if title_tag else ""  
    hot_score = hot_tag.get_text(strip=True) if hot_tag else ""  
-   ink = link_tag.get("href") if link_tag else ""  
+   link = link_tag.get("href") if link_tag else ""  
 
    #把相对链接转成完整链接
    if link:  
@@ -78,3 +78,39 @@ for item in hot_list:
 
 print("共爬取:", len(hot_list), "条")
 
+
+
+#---
+#通过mysqlhelper连接
+from baidu_hot_mysqlhelper import MySQLHelper
+
+db = MySqlHelper(
+    host="localhost",
+    port=3306,
+    user="root",
+    password="你的MySQL密码", 
+    database="web_crawler_db"
+)
+
+# 6. 准备 SQL
+sql = """
+INSERT INTO baidu_hot_search
+(keyword, hot_score, url, crawl_date)
+VALUES (%s, %s, %s, %s)
+"""
+
+# 7. 准备插入数据
+data = []
+
+for item in hot_list:
+    data.append((
+        item["keyword"],
+        item["hot_score"],
+        item["url"],
+        item["crawl_date"]
+    ))
+
+# 8. 调用 MySqlHelper 批量插入
+db.executemany(sql, data)
+
+print("百度热搜数据已成功写入 MySQL")
