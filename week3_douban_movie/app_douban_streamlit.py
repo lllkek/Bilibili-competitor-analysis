@@ -18,7 +18,7 @@ st.set_page_config(
 # 2. 读取 GitHub CSV
 # =========================
 
-CSV_URL = "这里替换成你GitHub CSV的Raw链接"
+CSV_URL = "https://raw.githubusercontent.com/lllkek/Bilibili-competitor-analysis/refs/heads/main/week3_douban_movie/douban_movie_top100.csv"
 
 
 @st.cache_data
