@@ -56,7 +56,7 @@ for item in items[:10]:
       link = urljoin(url, link) 
    
    #爬取日期
-   crawl_date = datetime.now().strftime("%Y-%m-%d") 
+   crawl_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
    #.保存到列表
    hot_list.append({  
@@ -82,14 +82,15 @@ print("共爬取:", len(hot_list), "条")
 
 #---
 #通过mysqlhelper连接
-from baidu_hot_mysqlhelper import MySQLHelper
+from mysqlhelper import MySqlHelper
+from config import DB_CONFIG
 
 db = MySqlHelper(
-    host="localhost",
-    port=3306,
-    user="root",
-    password="你的MySQL密码", 
-    database="web_crawler_db"
+    host=DB_CONFIG["host"],
+    port=DB_CONFIG["port"],
+    user=DB_CONFIG["user"],
+    password=DB_CONFIG["password"],
+    database=DB_CONFIG["database"]
 )
 
 # 6. 准备 SQL
