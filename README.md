@@ -41,7 +41,7 @@ https://douban-movie-visualization.streamlit.app/
 * `crawl_baidu.py`：百度热搜爬虫代码
 * `mysqlhelper.py`：MySQL 数据库操作封装类
 * `create-db-template.sql`：百度热搜相关数据库表创建 SQL
-* 后续计划补充：百度热搜数据表格文件，用于展示一次爬取结果
+* `baidu_hot_search.csv`：百度热搜数据表格
 
 ## Week 3：豆瓣电影 Top100 爬取、入库与可视化
 
