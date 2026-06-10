@@ -10,11 +10,11 @@ DROP TABLE IF EXISTS baidu_hot_search;
 
 -- 创建百度热搜表
 CREATE TABLE baidu_hot_search (
-    id int NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+    id int PRIMARY KEY AUTO_INCREMENT ,
+    rank_no int NOT NULL,
     keyword VARCHAR(255) NOT NULL,
     hot_score VARCHAR(100),
     url VARCHAR(500),
-    crawl_date DATETIME
+    crawl_time DATETIME
 );
 
-#TRUNCATE TABLE baidu_hot_search;
