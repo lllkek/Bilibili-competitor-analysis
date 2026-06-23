@@ -1,15 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from services.chart_service import (
-    get_douban_rating_distribution,
-    get_douban_genre_distribution,
-    get_douban_country_distribution,
-    get_douban_year_trend,
-    get_douban_rating_count_top,
-    get_douban_keywords,
-    get_baidu_hot_top10
-)
+from services.chart_service import DoubanChartService
 
 
 app = Flask(__name__)
@@ -26,6 +18,9 @@ CORS(
     }
 )
 
+# 创建豆瓣电影图表数据服务对象
+douban_chart_service = DoubanChartService()
+
 
 @app.route("/")
 def home():
@@ -37,7 +32,7 @@ def home():
 
 @app.route("/api/charts/douban-rating", methods=["GET"])
 def douban_rating_chart():
-    data = get_douban_rating_distribution()
+    data = douban_chart_service.get_rating_distribution()
 
     return jsonify({
         "chart_name": "douban_rating_distribution",
@@ -49,10 +44,13 @@ def douban_rating_chart():
 def douban_genre_chart():
     top_n = request.args.get("top_n", 10, type=int)
 
-    data = get_douban_genre_distribution(top_n=top_n)
+    data = douban_chart_service.get_genre_distribution(top_n=top_n)
 
     return jsonify({
         "chart_name": "douban_genre_distribution",
+        "params": {
+            "top_n": top_n
+        },
         "data": data
     })
 
@@ -61,17 +59,20 @@ def douban_genre_chart():
 def douban_country_chart():
     top_n = request.args.get("top_n", 10, type=int)
 
-    data = get_douban_country_distribution(top_n=top_n)
+    data = douban_chart_service.get_country_distribution(top_n=top_n)
 
     return jsonify({
         "chart_name": "douban_country_distribution",
+        "params": {
+            "top_n": top_n
+        },
         "data": data
     })
 
 
 @app.route("/api/charts/douban-year-trend", methods=["GET"])
 def douban_year_trend_chart():
-    data = get_douban_year_trend()
+    data = douban_chart_service.get_year_trend()
 
     return jsonify({
         "chart_name": "douban_year_trend",
@@ -83,10 +84,13 @@ def douban_year_trend_chart():
 def douban_rating_count_top_chart():
     top_n = request.args.get("top_n", 10, type=int)
 
-    data = get_douban_rating_count_top(top_n=top_n)
+    data = douban_chart_service.get_rating_count_top(top_n=top_n)
 
     return jsonify({
         "chart_name": "douban_rating_count_top",
+        "params": {
+            "top_n": top_n
+        },
         "data": data
     })
 
@@ -95,20 +99,33 @@ def douban_rating_count_top_chart():
 def douban_keywords_chart():
     top_n = request.args.get("top_n", 30, type=int)
 
-    data = get_douban_keywords(top_n=top_n)
+    data = douban_chart_service.get_keywords(top_n=top_n)
 
     return jsonify({
         "chart_name": "douban_keywords",
+        "params": {
+            "top_n": top_n
+        },
         "data": data
     })
 
 
-@app.route("/api/charts/baidu-hot", methods=["GET"])
-def baidu_hot_chart():
-    data = get_baidu_hot_top10()
+@app.route("/api/charts/douban-dashboard", methods=["GET"])
+def douban_dashboard_chart():
+    top_n = request.args.get("top_n", 10, type=int)
+    keyword_top_n = request.args.get("keyword_top_n", 30, type=int)
+
+    data = douban_chart_service.get_dashboard_data(
+        top_n=top_n,
+        keyword_top_n=keyword_top_n
+    )
 
     return jsonify({
-        "chart_name": "baidu_hot_top10",
+        "chart_name": "douban_dashboard",
+        "params": {
+            "top_n": top_n,
+            "keyword_top_n": keyword_top_n
+        },
         "data": data
     })
 
