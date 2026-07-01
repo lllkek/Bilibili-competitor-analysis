@@ -4,3 +4,5 @@ lxml
 pymysql
 Flask
 flask-cors
+snownlp
+jieba

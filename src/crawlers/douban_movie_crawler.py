@@ -23,11 +23,13 @@ class DoubanMovieCrawler:
     2. 支持保存到 MySQL
     3. 支持保存到 CSV
     4. 支持通过 fields 参数选择保存哪些字段
+    5. 保存电影详情页链接 movie_url，方便后续爬取电影评论
     """
 
     DEFAULT_FIELDS = [
         "rank_no",
         "movie_name",
+        "movie_url",
         "director",
         "actors",
         "rating_score",
@@ -124,13 +126,14 @@ class DoubanMovieCrawler:
                 continue
 
             rank_no = int(rank_tag.get_text(strip=True))
-            detail_url = link_tag.get("href")
-            detail_url = urljoin(self.base_url, detail_url)
+
+            movie_url = link_tag.get("href")
+            movie_url = urljoin(self.base_url, movie_url)
 
             movie_url_list.append(
                 {
                     "rank_no": rank_no,
-                    "detail_url": detail_url
+                    "movie_url": movie_url
                 }
             )
 
@@ -224,7 +227,7 @@ class DoubanMovieCrawler:
 
         return ""
 
-    def parse_detail_page(self, html, rank_no):
+    def parse_detail_page(self, html, rank_no, movie_url):
         """
         解析电影详情页，提取电影字段。
         """
@@ -280,6 +283,7 @@ class DoubanMovieCrawler:
         movie_data = {
             "rank_no": rank_no,
             "movie_name": movie_name,
+            "movie_url": movie_url,
             "director": director,
             "actors": actors,
             "rating_score": rating_score,
@@ -303,12 +307,17 @@ class DoubanMovieCrawler:
 
         for index, movie_item in enumerate(movie_url_list, start=1):
             rank_no = movie_item["rank_no"]
-            detail_url = movie_item["detail_url"]
+            movie_url = movie_item["movie_url"]
 
-            print(f"正在爬取第 {index}/{len(movie_url_list)} 部电影：{detail_url}")
+            print(f"正在爬取第 {index}/{len(movie_url_list)} 部电影：{movie_url}")
 
-            html = self.get_html(detail_url)
-            movie_data = self.parse_detail_page(html, rank_no)
+            html = self.get_html(movie_url)
+
+            movie_data = self.parse_detail_page(
+                html=html,
+                rank_no=rank_no,
+                movie_url=movie_url
+            )
 
             movie_detail_list.append(movie_data)
 
@@ -387,7 +396,7 @@ class DoubanMovieCrawler:
     def save_to_csv(self, data):
         """
         将豆瓣电影数据保存到 CSV。
-        支持根据 fields 动态保存部分字段。
+        支持根据 fields 参数动态保存部分字段。
         """
 
         if not data:

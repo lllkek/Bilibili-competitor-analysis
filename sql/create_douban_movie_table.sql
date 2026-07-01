@@ -6,8 +6,9 @@ DROP TABLE IF EXISTS douban_movie_top100;
 
 CREATE TABLE douban_movie_top100(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    rank_no INT ,
+    rank_no INT,
     movie_name VARCHAR(255),
+    movie_url VARCHAR(255),
     director VARCHAR(255),
     actors TEXT,
     rating_score DECIMAL(3,1),
